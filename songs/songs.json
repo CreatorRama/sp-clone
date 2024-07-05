@@ -21,15 +21,18 @@
             "info": "songs/cs/info.json",
             "cover": "songs/cs/cover.jpeg",
             "songs": [
-                "songs/cs/Hey-Dukh-Bhanjan-Maruti-Nandan(PaglaSongs)-Copy.mp3"
+                "songs/cs/Hey-Dukh-Bhanjan-Maruti-Nandan(PaglaSongs).mp3"
             ]
         },
          {
             "folder": "ncs",
             "info": "songs/ncs/info.json",
             "cover": "songs/ncs/cover.jpeg",
-            "songs": [
-                "songs/ncs/O-Kanha-Ab-To-Murli-Ki(PaglaSongs).mp3"
+            "songs": [""
+                "songs/ncs/O-Kanha-Ab-To-Murli-Ki(PaglaSongs).mp3",
+                "",
+                "",
+                "",
             ]
         }
     ]
