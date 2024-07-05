@@ -1,0 +1,20 @@
+{
+    "albums": [
+        {
+            "folder": "Ram",
+            "info": "songs/Ram/info.json",
+            "cover": "songs/Ram/cover.jpeg",
+            "songs": [
+                "songs/Ram/Jis-Andhe-Ne-Prabhu-Ko-Dekha-Nahi(PaglaSongs).mp3"
+            ]
+        },
+        {
+            "folder": "Krishna",
+            "info": "songs/Krishna/info.json",
+            "cover": "songs/Krishna/cover.jpeg",
+            "songs": [
+                "songs/Krishna/song2.mp3"
+            ]
+        }
+    ]
+}
