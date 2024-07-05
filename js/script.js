@@ -20,45 +20,31 @@ function secondsToMinutesSeconds(seconds) {
 }
 
 async function getsongs(folder) {
-    currfolder = folder;
-    let fetchURL = `${folder}/`;
-    console.log(`Fetching songs from URL: ${fetchURL}`);
+    let fetchURL = `songs/songs.json`;
+    console.log(`Fetching songs for folder: ${folder} from URL: ${fetchURL}`);
 
     try {
         let response = await fetch(fetchURL);
         if (!response.ok) {
-            throw new Error(`Failed to fetch ${folder}: ${response.statusText}`);
+            throw new Error(`Failed to fetch songs.json: ${response.statusText}`);
         }
 
-        let text = await response.text();
-        let div = document.createElement("div");
-        div.innerHTML = text;
-
-        let anchors = div.getElementsByTagName("a");
-        console.log("Anchors:", anchors);  // Log the anchors to verify
-
-        songs = [];
-        for (let i = 0; i < anchors.length; i++) {
-            const element = anchors[i];
-            if (element.href.endsWith(".mp3")) {
-                songs.push(element.href.split(`/${folder}/`)[1]);
-            }
+        let json = await response.json();
+        let album = json.albums.find(album => album.folder === folder);
+        if (!album) {
+            throw new Error(`Album not found for folder: ${folder}`);
         }
 
-        if (songs.length === 0) {
-            console.warn(`No songs found in folder: ${folder}`);
-        }
-
-        // Display all songs in the list
         let songul = document.querySelector(".songlist ul");
         songul.innerHTML = "";
 
+        songs = album.songs.map(song => song.split('/').pop());  // Extract the song file names
         songs.forEach(song => {
             songul.innerHTML += `<li>
                 <img class="invert" src="img/music.svg" alt="">
                 <div class="info">
                     <div>${song.replaceAll("%20", " ")}</div>
-                    <div>Ram</div>
+                    <div>${folder}</div>
                 </div>
                 <div class="playnow">
                     <span>PlayNow</span>
@@ -86,10 +72,11 @@ async function getsongs(folder) {
 }
 
 
+
 const playmusic = (track, pause = false) => {
     console.log(track);
-    currentsong.src = `${currfolder}/` + track;
-    console.log("ram");
+    currentsong.src = `songs/${currfolder}/${track}`;
+    console.log("Playing:", currentsong.src);
     if (!pause) {
         currentsong.play();
         document.querySelector(".circle").style.left = 0 + "%";
@@ -99,56 +86,50 @@ const playmusic = (track, pause = false) => {
     document.querySelector(".songtime").innerHTML = "00:00/00:00";
 }
 
+
 async function displayalbums() {
-    let fetchURL = `songs/`;
+    let fetchURL = `songs/songs.json`;
     console.log(`Fetching albums from URL: ${fetchURL}`);
 
     try {
         let response = await fetch(fetchURL);
         if (!response.ok) {
-            throw new Error(`Failed to fetch songs directory: ${response.statusText}`);
+            throw new Error(`Failed to fetch songs.json: ${response.statusText}`);
         }
 
-        let text = await response.text();
-        let div = document.createElement("div");
-        div.innerHTML = text;
-
-        let anchors = div.getElementsByTagName("a");
-        console.log("Album anchors:", anchors);  // Log the anchors to verify
+        let json = await response.json();
+        let albums = json.albums;
 
         let cardcontainer = document.querySelector(".cardcontainer");
         cardcontainer.innerHTML = "";  // Clear previous content
 
-        for (let i = 0; i < anchors.length; i++) {
-            const e = anchors[i];
-            if (e.href.includes("/songs/")) {
-                let folder = e.href.split("/").slice(-2)[1];
-                let fetchInfoURL = `songs/${folder}/info.json`;
-                console.log(`Fetching album info from URL: ${fetchInfoURL}`);
+        for (let album of albums) {
+            let folder = album.folder;
+            let fetchInfoURL = album.info;
+            console.log(`Fetching album info from URL: ${fetchInfoURL}`);
 
-                try {
-                    let response = await fetch(fetchInfoURL);
-                    if (!response.ok) {
-                        throw new Error(`Failed to fetch info.json for ${folder}: ${response.statusText}`);
-                    }
-
-                    let json = await response.json();
-                    cardcontainer.innerHTML += `<div data-folder="${folder}" class="card">
-                        <div class="playbutton">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="#000000" height="60px" width="40px" viewBox="0 0 60 60">
-                                <g>
-                                    <path d="M45.563,29.174l-22-15c-0.307-0.208-0.703-0.231-1.031-0.058C22.205,14.289,22,14.629,22,15v30 c0,0.371,0.205,0.711,0.533,0.884C22.679,45.962,22.84,46,23,46c0.197,0,0.394-0.059,0.563-0.174l22-15 C45.836,30.64,46,30.331,46,30S45.836,29.36,45.563,29.174z M24,43.107V16.893L43.225,30L24,43.107z"/>
-                                    <path d="M30,0C13.458,0,0,13.458,0,30s13.458,30,30,30s30-13.458,30-30S46.542,0,30,0z M30,58C14.561,58,2,45.439,2,30 S14.561,2,30,2s28,12.561,28,28S45.439,58,30,58z"/>
-                                </g>
-                            </svg>
-                        </div>
-                        <img src="songs/${folder}/cover.jpeg" alt="">
-                        <h2>${json.title}</h2>
-                        <p>${json.description}</p>
-                    </div>`;
-                } catch (error) {
-                    console.error(`Failed to fetch info.json for ${folder}: ${error.message}`);
+            try {
+                let response = await fetch(fetchInfoURL);
+                if (!response.ok) {
+                    throw new Error(`Failed to fetch info.json for ${folder}: ${response.statusText}`);
                 }
+
+                let info = await response.json();
+                cardcontainer.innerHTML += `<div data-folder="${folder}" class="card">
+                    <div class="playbutton">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="#000000" height="60px" width="40px" viewBox="0 0 60 60">
+                            <g>
+                                <path d="M45.563,29.174l-22-15c-0.307-0.208-0.703-0.231-1.031-0.058C22.205,14.289,22,14.629,22,15v30 c0,0.371,0.205,0.711,0.533,0.884C22.679,45.962,22.84,46,23,46c0.197,0,0.394-0.059,0.563-0.174l22-15 C45.836,30.64,46,30.331,46,30S45.836,29.36,45.563,29.174z M24,43.107V16.893L43.225,30L24,43.107z"/>
+                                <path d="M30,0C13.458,0,0,13.458,0,30s13.458,30,30,30s30-13.458,30-30S46.542,0,30,0z M30,58C14.561,58,2,45.439,2,30 S14.561,2,30,2s28,12.561,28,28S45.439,58,30,58z"/>
+                            </g>
+                        </svg>
+                    </div>
+                    <img src="${album.cover}" alt="">
+                    <h2>${info.title}</h2>
+                    <p>${info.description}</p>
+                </div>`;
+            } catch (error) {
+                console.error(`Failed to fetch info.json for ${folder}: ${error.message}`);
             }
         }
 
@@ -156,7 +137,7 @@ async function displayalbums() {
         Array.from(cardcontainer.getElementsByClassName("card")).forEach(e => {
             e.addEventListener("click", async () => {
                 folder = e.getAttribute("data-folder");
-                songs = await getsongs(`songs/${folder}`);
+                songs = await getsongs(folder);
                 if (songs.length > 0) {
                     playmusic(songs[0]);  // Play the first song of that album whenever the card is loaded
                 } else {
@@ -169,6 +150,7 @@ async function displayalbums() {
         console.error(error);
     }
 }
+
 
 
 function setupEventListeners() {
