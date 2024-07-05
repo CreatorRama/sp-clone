@@ -2,7 +2,6 @@ console.log("seeta ram hanuman");
 
 let currentsong = new Audio();
 let songs = [];
-let folder;
 let currfolder;
 
 function secondsToMinutesSeconds(seconds) {
@@ -71,21 +70,18 @@ async function getsongs(folder) {
     }
 }
 
-
-
 const playmusic = (track, pause = false) => {
-    console.log(track);
+    console.log(`Playing track: ${track} from folder: ${currfolder}`);
     currentsong.src = `songs/${currfolder}/${track}`;
     console.log("Playing:", currentsong.src);
     if (!pause) {
-        currentsong.play();
+        currentsong.play().catch(error => console.error('Error playing the song:', error));
         document.querySelector(".circle").style.left = 0 + "%";
         document.querySelector("#play").src = "img/pause.svg";
     }
     document.querySelector(".songinfo").innerHTML = track;
     document.querySelector(".songtime").innerHTML = "00:00/00:00";
 }
-
 
 async function displayalbums() {
     let fetchURL = `songs/songs.json`;
@@ -136,12 +132,12 @@ async function displayalbums() {
         // Load the playlist whenever a card is clicked
         Array.from(cardcontainer.getElementsByClassName("card")).forEach(e => {
             e.addEventListener("click", async () => {
-                folder = e.getAttribute("data-folder");
-                songs = await getsongs(folder);
+                currfolder = e.getAttribute("data-folder");  // Update currfolder here
+                songs = await getsongs(currfolder);
                 if (songs.length > 0) {
                     playmusic(songs[0]);  // Play the first song of that album whenever the card is loaded
                 } else {
-                    console.error(`No songs found in folder: ${folder}`);
+                    console.error(`No songs found in folder: ${currfolder}`);
                 }
             });
         });
@@ -150,8 +146,6 @@ async function displayalbums() {
         console.error(error);
     }
 }
-
-
 
 function setupEventListeners() {
     // Play/Pause button event listener
