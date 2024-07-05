@@ -28,11 +28,11 @@
             "folder": "ncs",
             "info": "songs/ncs/info.json",
             "cover": "songs/ncs/cover.jpeg",
-            "songs": [""
+            "songs": ["songs/ncs/Jis-Andhe-Ne-Prabhu-Ko-Dekha-Nahi(PaglaSongs).mp3",
+                "songs/ncs/Maduram-Maduram(PaglaSongs).mp3",
+                "songs/ncs/Jis-Andhe-Ne-Prabhu-Ko-Dekha-Nahi(PaglaSongs).mp3",
                 "songs/ncs/O-Kanha-Ab-To-Murli-Ki(PaglaSongs).mp3",
-                "",
-                "",
-                "",
+                "songs/ncs/O-Kanha-Ab-To-Murli-Ki(PaglaSongs).mp3"
             ]
         }
     ]
