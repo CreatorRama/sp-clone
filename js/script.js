@@ -21,7 +21,7 @@ function secondsToMinutesSeconds(seconds) {
 
 async function getsongs(folder) {
     currfolder = folder;
-    let fetchURL = `./${folder}/`;
+    let fetchURL = `${folder}/`;
     console.log(`Fetching songs from URL: ${fetchURL}`);
     let response = await fetch(fetchURL);
     if (!response.ok) {
@@ -76,7 +76,7 @@ async function getsongs(folder) {
 
 const playmusic = (track, pause = false) => {
     console.log(track);
-    currentsong.src = `./${currfolder}/` + track;
+    currentsong.src = `${currfolder}/` + track;
     console.log("ram");
     if (!pause) {
         currentsong.play();
@@ -88,7 +88,7 @@ const playmusic = (track, pause = false) => {
 }
 
 async function displayalbums() {
-    let fetchURL = `./songs/`;
+    let fetchURL = `songs/`;
     console.log(`Fetching albums from URL: ${fetchURL}`);
     let response = await fetch(fetchURL);
     if (!response.ok) {
@@ -107,7 +107,7 @@ async function displayalbums() {
         const e = anchors[i];
         if (e.href.includes("/songs/")) {
             let folder = e.href.split("/").slice(-2)[1];
-            let fetchInfoURL = `./songs/${folder}/info.json`;
+            let fetchInfoURL = `songs/${folder}/info.json`;
             console.log(`Fetching album info from URL: ${fetchInfoURL}`);
             let response = await fetch(fetchInfoURL);
             if (!response.ok) {
@@ -159,22 +159,18 @@ function setupEventListeners() {
         }
     });
 
-  
-    currentsong.addEventListener("timeupdate",()=>{
-        // console.log(currentsong.currentTime,currentsong.duration);
-        document.querySelector(".songtime").innerHTML=`${secondsToMinutesSeconds(currentsong.currentTime)}:${secondsToMinutesSeconds(currentsong.duration)}`;
-        document.querySelector(".circle").style.left=(currentsong.currentTime/currentsong.duration)*100+"%";
-    })
-    
-    // add event listener to seekbar
-    document.querySelector(".seekbar").addEventListener("click",e=>{
-        let percent=(e.offsetX/e.target.getBoundingClientRect().width)*100;
-        document.querySelector(".circle").style.left=percent+"%";
-        currentsong.currentTime=((currentsong.duration)*percent)/100;
-        console.log(currentsong.currentTime);
-    })
+    currentsong.addEventListener("timeupdate", () => {
+        document.querySelector(".songtime").innerHTML = `${secondsToMinutesSeconds(currentsong.currentTime)}:${secondsToMinutesSeconds(currentsong.duration)}`;
+        document.querySelector(".circle").style.left = (currentsong.currentTime / currentsong.duration) * 100 + "%";
+    });
 
-    // Add more event listeners as needed
+    // add event listener to seekbar
+    document.querySelector(".seekbar").addEventListener("click", e => {
+        let percent = (e.offsetX / e.target.getBoundingClientRect().width) * 100;
+        document.querySelector(".circle").style.left = percent + "%";
+        currentsong.currentTime = ((currentsong.duration) * percent) / 100;
+        console.log(currentsong.currentTime);
+    });
 
     // Add event listener to hamburger for opening left
     document.querySelector(".hamburger").addEventListener("click", () => {
@@ -208,44 +204,32 @@ function setupEventListeners() {
         }
     });
 
-
     // add an event listener for volume change
-document.querySelector(".range").getElementsByTagName("input")[0].addEventListener("change",(e)=>{
-    // console.log(e.target,e.target.value);
-    // console.log("current volume is",e.target.value);
-    
-//    console.log(currentsong.volume=parseInt(e.target.value)/100);
-   currentsong.volume=parseInt(e.target.value)/100;
-   if(currentsong.volume>0){
-    document.querySelector(".volume>img").src=document.querySelector(".volume>img").src.replace("mute.svg","volume.svg");
-   }
-    
-})
+    document.querySelector(".range").getElementsByTagName("input")[0].addEventListener("change", (e) => {
+        currentsong.volume = parseInt(e.target.value) / 100;
+        if (currentsong.volume > 0) {
+            document.querySelector(".volume>img").src = document.querySelector(".volume>img").src.replace("mute.svg", "volume.svg");
+        }
+    });
 
-// display volume input when touch
-document.querySelector(".volume").addEventListener("click",()=>{
-    document.querySelector(".range").getElementsByTagName("input")[0].style.display="block";
-})
+    // display volume input when touch
+    document.querySelector(".volume").addEventListener("click", () => {
+        document.querySelector(".range").getElementsByTagName("input")[0].style.display = "block";
+    });
 
-// add an event listener to mute the volume
-document.querySelector(".volume>img").addEventListener("click",e=>{
-    console.log(e.target);
-    if(e.target.src.includes("volume.svg")){
-        e.target.src=e.target.src.replace("volume.svg","mute.svg");
-        currentsong.volume=0;
-        document.querySelector(".range").getElementsByTagName("input")[0].style.display="block";
-        document.querySelector(".range").getElementsByTagName("input")[0].value=0;
-    }
-    else{
-        e.target.src=e.target.src.replace("mute.svg","volume.svg");
-        currentsong.volume=0.2;
-        document.querySelector(".range").getElementsByTagName("input")[0].value=20
-
-    }
-    
-})
-
-
+    // add an event listener to mute the volume
+    document.querySelector(".volume>img").addEventListener("click", e => {
+        if (e.target.src.includes("volume.svg")) {
+            e.target.src = e.target.src.replace("volume.svg", "mute.svg");
+            currentsong.volume = 0;
+            document.querySelector(".range").getElementsByTagName("input")[0].style.display = "block";
+            document.querySelector(".range").getElementsByTagName("input")[0].value = 0;
+        } else {
+            e.target.src = e.target.src.replace("mute.svg", "volume.svg");
+            currentsong.volume = 0.2;
+            document.querySelector(".range").getElementsByTagName("input")[0].value = 20;
+        }
+    });
 }
 
 function main() {
@@ -257,5 +241,3 @@ document.addEventListener("DOMContentLoaded", () => {
     console.log("DOM fully loaded and parsed");
     main();
 });
-
-       
