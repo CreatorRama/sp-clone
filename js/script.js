@@ -2,7 +2,7 @@ console.log("seeta ram hanuman");
 
 let currentsong = new Audio();
 let songs = [];
-let currfolder;
+let currfolder = "";
 
 function secondsToMinutesSeconds(seconds) {
     if (isNaN(seconds) || seconds < 0) {
@@ -71,6 +71,11 @@ async function getsongs(folder) {
 }
 
 const playmusic = (track, pause = false) => {
+    if (!currfolder) {
+        console.error("Current folder is not set.");
+        return;
+    }
+
     console.log(`Playing track: ${track} from folder: ${currfolder}`);
     currentsong.src = `songs/${currfolder}/${track}`;
     console.log("Playing:", currentsong.src);
