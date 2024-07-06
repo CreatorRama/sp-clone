@@ -132,13 +132,13 @@ async function displayalbums() {
         // Load the playlist whenever a card is clicked
         Array.from(cardcontainer.getElementsByClassName("card")).forEach(e => {
             e.addEventListener("click", async () => {
-                folder = e.getAttribute("data-folder");
-                console.log(`Loading songs for folder: ${folder}`);
-                songs = await getsongs(folder);
+                currfolder = e.getAttribute("data-folder");
+                console.log(`Loading songs for folder: ${currfolder}`);
+                songs = await getsongs(currfolder);
                 if (songs.length > 0) {
                     playmusic(songs[0]);  // Play the first song of that album whenever the card is loaded
                 } else {
-                    console.error(`No songs found in folder: ${folder}`);
+                    console.error(`No songs found in folder: ${currfolder}`);
                 }
             });
         });
