@@ -42,7 +42,7 @@ async function getsongs(folder) {
             songul.innerHTML += `<li>
                 <img class="invert" src="img/music.svg" alt="">
                 <div class="info">
-                    <div>${song.replaceAll("%20", " ")}</div>
+                    <div>${song.replace(/%20/g, " ").replace(/_/g, " ")}</div>
                     <div>${folder}</div>
                 </div>
                 <div class="playnow">
@@ -185,13 +185,8 @@ function setupEventListeners() {
         }
     });
 
-    document.querySelector(".range").getElementsByTagName("input")[0].addEventListener("change", (e) => {
-        currentsong.volume = parseInt(e.target.value) / 100;
-        if (currentsong.volume > 0) {
-            document.querySelector(".volume>img").src = document.querySelector(".volume>img").src.replace("mute", "volume");
-        } else {
-            document.querySelector(".volume>img").src = document.querySelector(".volume>img").src.replace("volume", "mute");
-        }
+    document.querySelector(".volume").addEventListener("mouseover", () => {
+        document.querySelector(".volume>img").src = document.querySelector(".volume>img").src.replace("mute", "volume");
     });
 
     document.querySelector(".volume").addEventListener("click", () => {
@@ -203,12 +198,6 @@ function setupEventListeners() {
             document.querySelector(".volume>img").src = document.querySelector(".volume>img").src.replace("mute", "volume");
         }
     });
-}
-
-function playmusic(song) {
-    currentsong.src = `songs/${currfolder}/${song}`;
-    currentsong.play();
-    document.querySelector('#play').src = "img/pause.svg";
 }
 
 window.onload = () => {
