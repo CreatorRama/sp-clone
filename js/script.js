@@ -19,8 +19,11 @@ function secondsToMinutesSeconds(seconds) {
 }
 
 async function getsongs(folder) {
-    let fetchURL = `songs/${folder}/songs.json`;
-    console.log(`Fetching songs for folder: ${folder} from URL: ${fetchURL}`);
+    // We don't need to fetch songs.json for the specific folder
+    // Instead, use the global songs.json to find the album and its songs
+
+    let fetchURL = `songs/songs.json`;
+    console.log(`Fetching album data from URL: ${fetchURL}`);
 
     try {
         let response = await fetch(fetchURL);
@@ -207,14 +210,14 @@ function setupEventListeners() {
         let index = songs.indexOf(currentsong.src.split("/").slice(-2)[1]);
         let sl = songs.length;
         if (index === sl - 1) {
-            playmusic(songs[index - (sl - 1)]);
+            playmusic(songs[0]);
         } else {
             playmusic(songs[index + 1]);
         }
     });
 
-    // add an event listener for volume change
-    document.querySelector(".range").getElementsByTagName("input")[0].addEventListener("input", e => {
+    // Add event listener for volume change
+    document.querySelector(".volume input[type='range']").addEventListener("input", e => {
         currentsong.volume = e.target.value / 100;
     });
 
