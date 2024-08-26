@@ -195,6 +195,22 @@ function setupEventListeners() {
         isSeeking = false;
     });
 
+      // Touch events
+    seekbar.addEventListener("touchstart", (e) => {
+        isSeeking = true;
+        seek(e);
+    });
+
+    seekbar.addEventListener("touchmove", (e) => {
+        if (isSeeking) {
+            seek(e);
+        }
+    });
+
+    seekbar.addEventListener("touchend", (e) => {
+        isSeeking = false;
+        seek(e);
+    });
     function seek(e) {
         const seekbarRect = e.target.getBoundingClientRect();
         const percent = (e.clientX - seekbarRect.left) / seekbarRect.width * 100;
@@ -213,19 +229,7 @@ function setupEventListeners() {
     });
 
     // Add event listener for previous song
-    const previousButton = document.querySelector("#previous");
-    previousButton.addEventListener("click", () => {
-        let index = songs.indexOf(currentsong.src.split("/").slice(-2)[1]);
-        let sl = songs.length;
-        if (index === 0) {
-            playmusic(songs[index + (sl - 1)]);
-        } else {
-            playmusic(songs[index - 1]);
-        }
-    });
-
-    // Add touch event listeners for previous song
-    previousButton.addEventListener("touchstart", () => {
+    document.querySelector("#previous").addEventListener("click", () => {
         let index = songs.indexOf(currentsong.src.split("/").slice(-2)[1]);
         let sl = songs.length;
         if (index === 0) {
@@ -236,19 +240,7 @@ function setupEventListeners() {
     });
 
     // Add event listener for next song
-    const nextButton = document.querySelector("#next");
-    nextButton.addEventListener("click", () => {
-        let index = songs.indexOf(currentsong.src.split("/").slice(-2)[1]);
-        let sl = songs.length;
-        if (index === (sl - 1)) {
-            playmusic(songs[index - (sl - 1)]);
-        } else {
-            playmusic(songs[index + 1]);
-        }
-    });
-
-    // Add touch event listeners for next song
-    nextButton.addEventListener("touchstart", () => {
+    document.querySelector("#next").addEventListener("click", () => {
         let index = songs.indexOf(currentsong.src.split("/").slice(-2)[1]);
         let sl = songs.length;
         if (index === (sl - 1)) {
