@@ -89,13 +89,13 @@ const playmusic = (track, pause = false) => {
 }
 
 async function displayalbums() {
-    let fetchURL = songs/songs.json;
-    console.log(Fetching albums from URL: ${fetchURL});
+    let fetchURL = `songs/songs.json`;
+    console.log(`Fetching albums from URL: ${fetchURL}`);
 
     try {
         let response = await fetch(fetchURL);
         if (!response.ok) {
-            throw new Error(Failed to fetch songs.json: ${response.statusText});
+            throw new Error(`Failed to fetch songs.json: ${response.statusText}`);
         }
 
         let json = await response.json();
@@ -143,7 +143,7 @@ async function displayalbums() {
                 if (songs.length > 0) {
                     playmusic(songs[0]);  // Play the first song of that album whenever the card is loaded
                 } else {
-                    console.error(No songs found in folder: ${currfolder});
+                    console.error(`No songs found in folder: ${currfolder}`);
                 }
             });
         });
@@ -167,7 +167,7 @@ function setupEventListeners() {
     });
 
     currentsong.addEventListener("timeupdate", () => {
-        document.querySelector(".songtime").innerHTML = `${secondsToMinutesSeconds(currentsong.currentTime)}:${secondsToMinutesSeconds(currentsong.duration)}`;
+        document.querySelector(".songtime").innerHTML = `${secondsToMinutesSeconds(currentsong.currentTime)}/${secondsToMinutesSeconds(currentsong.duration)}`;
         document.querySelector(".circle").style.left = (currentsong.currentTime / currentsong.duration) * 100 + "%";
     });
 
@@ -215,36 +215,14 @@ function setupEventListeners() {
     document.querySelector(".range").getElementsByTagName("input")[0].addEventListener("change", (e) => {
         currentsong.volume = parseInt(e.target.value) / 100;
         if (currentsong.volume > 0) {
-            document.querySelector(".volume>img").src = document.querySelector(".volume>img").src.replace("mute.svg", "volume.svg");
-        }
-    });
-
-    // display volume input when touch
-    document.querySelector(".volume").addEventListener("click", () => {
-        document.querySelector(".range").getElementsByTagName("input")[0].style.display = "block";
-    });
-
-    // add an event listener to mute the volume
-    document.querySelector(".volume>img").addEventListener("click", e => {
-        if (e.target.src.includes("volume.svg")) {
-            e.target.src = e.target.src.replace("volume.svg", "mute.svg");
-            currentsong.volume = 0;
-            document.querySelector(".range").getElementsByTagName("input")[0].style.display = "block";
-            document.querySelector(".range").getElementsByTagName("input")[0].value = 0;
+            document.querySelector(".volume img").src = "img/volume.svg";
         } else {
-            e.target.src = e.target.src.replace("mute.svg", "volume.svg");
-            currentsong.volume = 0.2;
-            document.querySelector(".range").getElementsByTagName("input")[0].value = 20;
+            document.querySelector(".volume img").src = "img/mute.svg";
         }
     });
-}
-
-function main() {
-    displayalbums();
-    setupEventListeners();
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-    console.log("DOM fully loaded and parsed");
-    main();
+    displayalbums();
+    setupEventListeners();
 });
