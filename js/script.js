@@ -15,23 +15,24 @@ function secondsToMinutesSeconds(seconds) {
     const formattedMinutes = String(minutes).padStart(2, '0');
     const formattedSeconds = String(remainingSeconds).padStart(2, '0');
 
-    return ${formattedMinutes}:${formattedSeconds};
+    return `${formattedMinutes}:${formattedSeconds}`; // Use backticks here
 }
 
+
 async function getsongs(folder) {
-    let fetchURL = songs/songs.json;
-    console.log(Fetching songs for folder: ${folder} from URL: ${fetchURL});
+    let fetchURL = `songs/songs.json`; // Use backticks here for template literal
+    console.log(`Fetching songs for folder: ${folder} from URL: ${fetchURL}`); // Use backticks here for template literal
 
     try {
         let response = await fetch(fetchURL);
         if (!response.ok) {
-            throw new Error(Failed to fetch songs.json: ${response.statusText});
+            throw new Error(`Failed to fetch songs.json: ${response.statusText}`); // Use backticks here for template literal
         }
 
         let json = await response.json();
         let album = json.albums.find(album => album.folder === folder);
         if (!album) {
-            throw new Error(Album not found for folder: ${folder});
+            throw new Error(`Album not found for folder: ${folder}`); // Use backticks here for template literal
         }
 
         let songul = document.querySelector(".songlist ul");
@@ -39,7 +40,7 @@ async function getsongs(folder) {
 
         songs = album.songs.map(song => song.split('/').pop());  // Extract the song file names
         songs.forEach(song => {
-            songul.innerHTML += <li>
+            songul.innerHTML += `<li>
                 <img class="invert" src="img/music.svg" alt="">
                 <div class="info">
                     <div>${song.replaceAll("%20", " ")}</div>
@@ -49,7 +50,7 @@ async function getsongs(folder) {
                     <span>PlayNow</span>
                     <img class="invert" src="img/play.svg" alt="">
                 </div>
-            </li>;
+            </li>`; // Use backticks here for template literal
         });
 
         // Attach an event listener to each song
@@ -70,32 +71,15 @@ async function getsongs(folder) {
     }
 }
 
-const playmusic = (track, pause = false) => {
-    if (!currfolder) {
-        console.error("Current folder is not set.");
-        return;
-    }
-
-    console.log(Playing track: ${track} from folder: ${currfolder});
-    currentsong.src = songs/${currfolder}/${track};
-    console.log("Playing:", currentsong.src);
-    if (!pause) {
-        currentsong.play().catch(error => console.error('Error playing the song:', error));
-        document.querySelector(".circle").style.left = 0 + "%";
-        document.querySelector("#play").src = "img/pause.svg";
-    }
-    document.querySelector(".songinfo").innerHTML = track;
-    document.querySelector(".songtime").innerHTML = "00:00/00:00";
-}
 
 async function displayalbums() {
-    let fetchURL = songs/songs.json;
-    console.log(Fetching albums from URL: ${fetchURL});
+    let fetchURL = `songs/songs.json`; // Use backticks here for template literal
+    console.log(`Fetching albums from URL: ${fetchURL}`); // Use backticks here for template literal
 
     try {
         let response = await fetch(fetchURL);
         if (!response.ok) {
-            throw new Error(Failed to fetch songs.json: ${response.statusText});
+            throw new Error(`Failed to fetch songs.json: ${response.statusText}`); // Use backticks here for template literal
         }
 
         let json = await response.json();
@@ -107,16 +91,16 @@ async function displayalbums() {
         for (let album of albums) {
             let folder = album.folder;
             let fetchInfoURL = album.info;
-            console.log(Fetching album info from URL: ${fetchInfoURL});
+            console.log(`Fetching album info from URL: ${fetchInfoURL}`); // Use backticks here for template literal
 
             try {
                 let response = await fetch(fetchInfoURL);
                 if (!response.ok) {
-                    throw new Error(Failed to fetch info.json for ${folder}: ${response.statusText});
+                    throw new Error(`Failed to fetch info.json for ${folder}: ${response.statusText}`); // Use backticks here for template literal
                 }
 
                 let info = await response.json();
-                cardcontainer.innerHTML += <div data-folder="${folder}" class="card">
+                cardcontainer.innerHTML += `<div data-folder="${folder}" class="card">
                     <div class="playbutton">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="#000000" height="60px" width="40px" viewBox="0 0 60 60">
                             <g>
@@ -128,9 +112,9 @@ async function displayalbums() {
                     <img src="${album.cover}" alt="">
                     <h2>${info.title}</h2>
                     <p>${info.description}</p>
-                </div>;
+                </div>`; // Use backticks here for template literal
             } catch (error) {
-                console.error(Failed to fetch info.json for ${folder}: ${error.message});
+                console.error(`Failed to fetch info.json for ${folder}: ${error.message}`); // Use backticks here for template literal
             }
         }
 
@@ -138,12 +122,12 @@ async function displayalbums() {
         Array.from(cardcontainer.getElementsByClassName("card")).forEach(e => {
             e.addEventListener("click", async () => {
                 currfolder = e.getAttribute("data-folder");
-                console.log(Loading songs for folder: ${currfolder});
+                console.log(`Loading songs for folder: ${currfolder}`); // Use backticks here for template literal
                 songs = await getsongs(currfolder);
                 if (songs.length > 0) {
                     playmusic(songs[0]);  // Play the first song of that album whenever the card is loaded
                 } else {
-                    console.error(No songs found in folder: ${currfolder});
+                    console.error(`No songs found in folder: ${currfolder}`); // Use backticks here for template literal
                 }
             });
         });
@@ -152,6 +136,7 @@ async function displayalbums() {
         console.error(error);
     }
 }
+
 
 function setupEventListeners() {
     // Play/Pause button event listener
