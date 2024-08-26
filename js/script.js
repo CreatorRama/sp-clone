@@ -20,7 +20,7 @@ function secondsToMinutesSeconds(seconds) {
 
 async function getsongs(folder) {
     let fetchURL = `songs/${folder}/songs.json`;
-    console.log(Fetching songs for folder: ${folder} from URL: ${fetchURL});
+    console.log(`Fetching songs for folder: ${folder} from URL: ${fetchURL}`);
 
     try {
         let response = await fetch(fetchURL);
