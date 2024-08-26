@@ -15,30 +15,29 @@ function secondsToMinutesSeconds(seconds) {
     const formattedMinutes = String(minutes).padStart(2, '0');
     const formattedSeconds = String(remainingSeconds).padStart(2, '0');
 
-    return `${formattedMinutes}:${formattedSeconds}`; // Use backticks here
+    return `${formattedMinutes}:${formattedSeconds}`;
 }
 
-
 async function getsongs(folder) {
-    let fetchURL = `songs/songs.json`; // Use backticks here for template literal
-    console.log(`Fetching songs for folder: ${folder} from URL: ${fetchURL}`); // Use backticks here for template literal
+    let fetchURL = `songs/songs.json`;
+    console.log(`Fetching songs for folder: ${folder} from URL: ${fetchURL}`);
 
     try {
         let response = await fetch(fetchURL);
         if (!response.ok) {
-            throw new Error(`Failed to fetch songs.json: ${response.statusText}`); // Use backticks here for template literal
+            throw new Error(`Failed to fetch songs.json: ${response.statusText}`);
         }
 
         let json = await response.json();
         let album = json.albums.find(album => album.folder === folder);
         if (!album) {
-            throw new Error(`Album not found for folder: ${folder}`); // Use backticks here for template literal
+            throw new Error(`Album not found for folder: ${folder}`);
         }
 
         let songul = document.querySelector(".songlist ul");
         songul.innerHTML = "";
 
-        songs = album.songs.map(song => song.split('/').pop());  // Extract the song file names
+        songs = album.songs.map(song => song.split('/').pop());
         songs.forEach(song => {
             songul.innerHTML += `<li>
                 <img class="invert" src="img/music.svg" alt="">
@@ -50,10 +49,9 @@ async function getsongs(folder) {
                     <span>PlayNow</span>
                     <img class="invert" src="img/play.svg" alt="">
                 </div>
-            </li>`; // Use backticks here for template literal
+            </li>`;
         });
 
-        // Attach an event listener to each song
         Array.from(songul.children).forEach(e => {
             e.addEventListener("click", () => {
                 const infoElement = e.querySelector(".info");
@@ -71,32 +69,31 @@ async function getsongs(folder) {
     }
 }
 
-
 async function displayalbums() {
-    let fetchURL = `songs/songs.json`; // Use backticks here for template literal
-    console.log(`Fetching albums from URL: ${fetchURL}`); // Use backticks here for template literal
+    let fetchURL = `songs/songs.json`;
+    console.log(`Fetching albums from URL: ${fetchURL}`);
 
     try {
         let response = await fetch(fetchURL);
         if (!response.ok) {
-            throw new Error(`Failed to fetch songs.json: ${response.statusText}`); // Use backticks here for template literal
+            throw new Error(`Failed to fetch songs.json: ${response.statusText}`);
         }
 
         let json = await response.json();
         let albums = json.albums;
 
         let cardcontainer = document.querySelector(".cardcontainer");
-        cardcontainer.innerHTML = "";  // Clear previous content
+        cardcontainer.innerHTML = "";
 
         for (let album of albums) {
             let folder = album.folder;
             let fetchInfoURL = album.info;
-            console.log(`Fetching album info from URL: ${fetchInfoURL}`); // Use backticks here for template literal
+            console.log(`Fetching album info from URL: ${fetchInfoURL}`);
 
             try {
                 let response = await fetch(fetchInfoURL);
                 if (!response.ok) {
-                    throw new Error(`Failed to fetch info.json for ${folder}: ${response.statusText}`); // Use backticks here for template literal
+                    throw new Error(`Failed to fetch info.json for ${folder}: ${response.statusText}`);
                 }
 
                 let info = await response.json();
@@ -112,22 +109,21 @@ async function displayalbums() {
                     <img src="${album.cover}" alt="">
                     <h2>${info.title}</h2>
                     <p>${info.description}</p>
-                </div>`; // Use backticks here for template literal
+                </div>`;
             } catch (error) {
-                console.error(`Failed to fetch info.json for ${folder}: ${error.message}`); // Use backticks here for template literal
+                console.error(`Failed to fetch info.json for ${folder}: ${error.message}`);
             }
         }
 
-        // Load the playlist whenever a card is clicked
         Array.from(cardcontainer.getElementsByClassName("card")).forEach(e => {
             e.addEventListener("click", async () => {
                 currfolder = e.getAttribute("data-folder");
-                console.log(`Loading songs for folder: ${currfolder}`); // Use backticks here for template literal
+                console.log(`Loading songs for folder: ${currfolder}`);
                 songs = await getsongs(currfolder);
                 if (songs.length > 0) {
-                    playmusic(songs[0]);  // Play the first song of that album whenever the card is loaded
+                    playmusic(songs[0]);
                 } else {
-                    console.error(`No songs found in folder: ${currfolder}`); // Use backticks here for template literal
+                    console.error(`No songs found in folder: ${currfolder}`);
                 }
             });
         });
@@ -137,9 +133,7 @@ async function displayalbums() {
     }
 }
 
-
 function setupEventListeners() {
-    // Play/Pause button event listener
     const playPauseButton = document.querySelector('#play');
     playPauseButton.addEventListener('click', () => {
         if (currentsong.paused) {
@@ -152,11 +146,10 @@ function setupEventListeners() {
     });
 
     currentsong.addEventListener("timeupdate", () => {
-        document.querySelector(".songtime").innerHTML = ${secondsToMinutesSeconds(currentsong.currentTime)}:${secondsToMinutesSeconds(currentsong.duration)};
+        document.querySelector(".songtime").innerHTML = `${secondsToMinutesSeconds(currentsong.currentTime)}:${secondsToMinutesSeconds(currentsong.duration)}`;
         document.querySelector(".circle").style.left = (currentsong.currentTime / currentsong.duration) * 100 + "%";
     });
 
-    // add event listener to seekbar
     document.querySelector(".seekbar").addEventListener("click", e => {
         let percent = (e.offsetX / e.target.getBoundingClientRect().width) * 100;
         document.querySelector(".circle").style.left = percent + "%";
@@ -164,17 +157,14 @@ function setupEventListeners() {
         console.log(currentsong.currentTime);
     });
 
-    // Add event listener to hamburger for opening left
     document.querySelector(".hamburger").addEventListener("click", () => {
         document.querySelector(".left").style.left = "0";
     });
 
-    // Add event listener for closing hamburger
     document.querySelector(".close").addEventListener("click", () => {
         document.querySelector(".left").style.left = "-120%";
     });
 
-    // Add event listener for previous song
     document.querySelector("#previous").addEventListener("click", () => {
         let index = songs.indexOf(currentsong.src.split("/").slice(-2)[1]);
         let sl = songs.length;
@@ -185,7 +175,6 @@ function setupEventListeners() {
         }
     });
 
-    // Add event listener for next song
     document.querySelector("#next").addEventListener("click", () => {
         let index = songs.indexOf(currentsong.src.split("/").slice(-2)[1]);
         let sl = songs.length;
@@ -196,40 +185,33 @@ function setupEventListeners() {
         }
     });
 
-    // add an event listener for volume change
     document.querySelector(".range").getElementsByTagName("input")[0].addEventListener("change", (e) => {
         currentsong.volume = parseInt(e.target.value) / 100;
         if (currentsong.volume > 0) {
-            document.querySelector(".volume>img").src = document.querySelector(".volume>img").src.replace("mute.svg", "volume.svg");
+            document.querySelector(".volume>img").src = document.querySelector(".volume>img").src.replace("mute", "volume");
+        } else {
+            document.querySelector(".volume>img").src = document.querySelector(".volume>img").src.replace("volume", "mute");
         }
     });
 
-    // display volume input when touch
     document.querySelector(".volume").addEventListener("click", () => {
-        document.querySelector(".range").getElementsByTagName("input")[0].style.display = "block";
-    });
-
-    // add an event listener to mute the volume
-    document.querySelector(".volume>img").addEventListener("click", e => {
-        if (e.target.src.includes("volume.svg")) {
-            e.target.src = e.target.src.replace("volume.svg", "mute.svg");
+        if (currentsong.volume > 0) {
             currentsong.volume = 0;
-            document.querySelector(".range").getElementsByTagName("input")[0].style.display = "block";
-            document.querySelector(".range").getElementsByTagName("input")[0].value = 0;
+            document.querySelector(".volume>img").src = document.querySelector(".volume>img").src.replace("volume", "mute");
         } else {
-            e.target.src = e.target.src.replace("mute.svg", "volume.svg");
-            currentsong.volume = 0.2;
-            document.querySelector(".range").getElementsByTagName("input")[0].value = 20;
+            currentsong.volume = 1;
+            document.querySelector(".volume>img").src = document.querySelector(".volume>img").src.replace("mute", "volume");
         }
     });
 }
 
-function main() {
+function playmusic(song) {
+    currentsong.src = `songs/${currfolder}/${song}`;
+    currentsong.play();
+    document.querySelector('#play').src = "img/pause.svg";
+}
+
+window.onload = () => {
     displayalbums();
     setupEventListeners();
 }
-
-document.addEventListener("DOMContentLoaded", () => {
-    console.log("DOM fully loaded and parsed");
-    main();
-});
