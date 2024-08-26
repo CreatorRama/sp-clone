@@ -248,23 +248,23 @@ body{
 } */
 .seekbar{
     cursor: pointer;
-    position: relative;
+    position: absolute;
     background: rgb(174, 50, 50);
     bottom: 0;
-    height: 10px;
+    height: 5px;
     width: 98%;
     /* border: 2px solid black; */
     border-radius: 10px;
 }
-.circle {
-    position: absolute;
-    top: 0;
+.circle{
+    position: relative;
+    bottom: 6px;
+    width: 13px;
+    height: 13px;
+    border-radius: 13px;
+    background-color: black;
     left: 0;
-    width: 20px; 
-    height: 20px;
-    background-color: #333;
-    border-radius: 50%;
-     transition: left 0.5s;;
+    transition: left 0.5s;;
 }
 .songbuttons img{
     cursor: pointer;
