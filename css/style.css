@@ -495,4 +495,27 @@ body{
         width: 105vw;
         height: 13vh;
     }
+    .seekbar {
+    cursor: pointer;
+    position: absolute;
+    background: rgb(174, 50, 50);
+    bottom: 0;
+    height: 5px;
+    width: 98%;
+    border-radius: 10px;
+    /* Ensure it has a touch area */
+    touch-action: none;
+}
+
+.circle {
+    position: relative;
+    bottom: 6px;
+    width: 13px;
+    height: 13px;
+    border-radius: 50%;
+    background-color: black;
+    transition: left 0.5s;
+    /* Ensure it has a touch area */
+    touch-action: none;
+}
 }
