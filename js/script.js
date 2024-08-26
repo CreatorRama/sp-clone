@@ -167,17 +167,40 @@ function setupEventListeners() {
     });
 
     currentsong.addEventListener("timeupdate", () => {
-        document.querySelector(".songtime").innerHTML = `${secondsToMinutesSeconds(currentsong.currentTime)}:${secondsToMinutesSeconds(currentsong.duration)}`;
+        document.querySelector(".songtime").innerHTML = `${secondsToMinutesSeconds(currentsong.currentTime)} / ${secondsToMinutesSeconds(currentsong.duration)}`;
         document.querySelector(".circle").style.left = (currentsong.currentTime / currentsong.duration) * 100 + "%";
     });
 
-    // add event listener to seekbar
-    document.querySelector(".seekbar").addEventListener("click", e => {
-        let percent = (e.offsetX / e.target.getBoundingClientRect().width) * 100;
-        document.querySelector(".circle").style.left = percent + "%";
-        currentsong.currentTime = ((currentsong.duration) * percent) / 100;
-        console.log(currentsong.currentTime);
+    // Seekbar functionality
+    const seekbar = document.querySelector(".seekbar");
+    let isSeeking = false;
+
+    seekbar.addEventListener("mousedown", (e) => {
+        isSeeking = true;
+        seek(e);
     });
+
+    seekbar.addEventListener("mousemove", (e) => {
+        if (isSeeking) {
+            seek(e);
+        }
+    });
+
+    seekbar.addEventListener("mouseup", (e) => {
+        isSeeking = false;
+        seek(e);
+    });
+
+    seekbar.addEventListener("mouseleave", () => {
+        isSeeking = false;
+    });
+
+    function seek(e) {
+        const seekbarRect = e.target.getBoundingClientRect();
+        const percent = (e.clientX - seekbarRect.left) / seekbarRect.width * 100;
+        document.querySelector(".circle").style.left = percent + "%";
+        currentsong.currentTime = (currentsong.duration * percent) / 100;
+    }
 
     // Add event listener to hamburger for opening left
     document.querySelector(".hamburger").addEventListener("click", () => {
@@ -193,7 +216,7 @@ function setupEventListeners() {
     document.querySelector("#previous").addEventListener("click", () => {
         let index = songs.indexOf(currentsong.src.split("/").slice(-2)[1]);
         let sl = songs.length;
-        if (index == 0) {
+        if (index === 0) {
             playmusic(songs[index + (sl - 1)]);
         } else {
             playmusic(songs[index - 1]);
@@ -204,47 +227,13 @@ function setupEventListeners() {
     document.querySelector("#next").addEventListener("click", () => {
         let index = songs.indexOf(currentsong.src.split("/").slice(-2)[1]);
         let sl = songs.length;
-        if (index == sl - 1) {
+        if (index === (sl - 1)) {
             playmusic(songs[index - (sl - 1)]);
         } else {
             playmusic(songs[index + 1]);
         }
     });
-
-    // add an event listener for volume change
-    document.querySelector(".range").getElementsByTagName("input")[0].addEventListener("change", (e) => {
-        currentsong.volume = parseInt(e.target.value) / 100;
-        if (currentsong.volume > 0) {
-            document.querySelector(".volume>img").src = document.querySelector(".volume>img").src.replace("mute.svg", "volume.svg");
-        }
-    });
-
-    // display volume input when touch
-    document.querySelector(".volume").addEventListener("click", () => {
-        document.querySelector(".range").getElementsByTagName("input")[0].style.display = "block";
-    });
-
-    // add an event listener to mute the volume
-    document.querySelector(".volume>img").addEventListener("click", e => {
-        if (e.target.src.includes("volume.svg")) {
-            e.target.src = e.target.src.replace("volume.svg", "mute.svg");
-            currentsong.volume = 0;
-            document.querySelector(".range").getElementsByTagName("input")[0].style.display = "block";
-            document.querySelector(".range").getElementsByTagName("input")[0].value = 0;
-        } else {
-            e.target.src = e.target.src.replace("mute.svg", "volume.svg");
-            currentsong.volume = 0.2;
-            document.querySelector(".range").getElementsByTagName("input")[0].value = 20;
-        }
-    });
 }
 
-function main() {
-    displayalbums();
-    setupEventListeners();
-}
-
-document.addEventListener("DOMContentLoaded", () => {
-    console.log("DOM fully loaded and parsed");
-    main();
-});
+setupEventListeners();
+displayalbums();
